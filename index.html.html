@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Transit Experience — R&R & KTM Digital Upgrade Proposal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-dark: #0a0e1a;
+      --bg-card: rgba(255,255,255,0.04);
+      --bg-card-hover: rgba(255,255,255,0.07);
+      --accent: #3b82f6;
+      --accent-light: #60a5fa;
+      --accent-glow: rgba(59,130,246,0.25);
+      --green: #10b981;
+      --amber: #f59e0b;
+      --purple: #8b5cf6;
+      --rose: #f43f5e;
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --border: rgba(255,255,255,0.08);
+    }
+
+    html { scroll-behavior: smooth; scroll-snap-type: y mandatory; }
+    body { font-family: 'Inter', -apple-system, sans-serif; background: var(--bg-dark); color: var(--text); overflow-x: hidden; }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 1rem 2rem;
+      background: rgba(10,14,26,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      transition: transform 0.3s;
+    }
+    nav .logo { font-weight: 700; font-size: 0.95rem; letter-spacing: -0.02em; color: var(--accent-light); }
+    nav .nav-links { display: flex; gap: 1.5rem; }
+    nav .nav-links a {
+      color: var(--text-muted); text-decoration: none; font-size: 0.85rem; font-weight: 500;
+      transition: color 0.2s;
+    }
+    nav .nav-links a:hover { color: white; }
+
+    section {
+      min-height: 100vh; scroll-snap-align: start;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 6rem 4rem 4rem;
+      position: relative;
+    }
+
+    .fade-up {
+      opacity: 0; transform: translateY(40px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+    .fade-up.delay-1 { transition-delay: 0.1s; }
+    .fade-up.delay-2 { transition-delay: 0.2s; }
+    .fade-up.delay-3 { transition-delay: 0.3s; }
+    .fade-up.delay-4 { transition-delay: 0.4s; }
+    .fade-up.delay-5 { transition-delay: 0.5s; }
+
+    .hero {
+      text-align: center; align-items: center;
+      background: radial-gradient(ellipse at 50% 30%, rgba(59,130,246,0.12) 0%, transparent 60%);
+    }
+    .hero-badge {
+      display: inline-block; padding: 0.4rem 1rem; border-radius: 100px;
+      background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.25);
+      font-size: 0.8rem; font-weight: 500; color: var(--accent-light);
+      margin-bottom: 2rem; letter-spacing: 0.05em; text-transform: uppercase;
+    }
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 800;
+      letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 1.25rem;
+      background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero p { font-size: 1.25rem; color: var(--text-muted); max-width: 600px; line-height: 1.6; }
+    .hero-cta {
+      margin-top: 2.5rem; display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
+    }
+    .btn {
+      padding: 0.75rem 1.75rem; border-radius: 10px; font-size: 0.9rem; font-weight: 600;
+      text-decoration: none; transition: all 0.25s; cursor: pointer; border: none;
+    }
+    .btn-primary { background: var(--accent); color: white; box-shadow: 0 4px 20px var(--accent-glow); }
+    .btn-primary:hover { background: #2563eb; transform: translateY(-2px); box-shadow: 0 8px 30px var(--accent-glow); }
+    .btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    .btn-outline:hover { border-color: rgba(255,255,255,0.25); background: rgba(255,255,255,0.04); }
+
+    .section-label {
+      font-size: 0.75rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--accent-light); margin-bottom: 0.75rem;
+    }
+    .section-title {
+      font-size: clamp(1.75rem, 4vw, 2.75rem); font-weight: 700;
+      letter-spacing: -0.02em; margin-bottom: 1rem; line-height: 1.2;
+    }
+    .section-desc { font-size: 1.05rem; color: var(--text-muted); max-width: 600px; line-height: 1.65; margin-bottom: 3rem; }
+
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem; }
+    .card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 1.75rem; transition: all 0.3s;
+    }
+    .card:hover { background: var(--bg-card-hover); border-color: rgba(255,255,255,0.12); transform: translateY(-4px); }
+    .card-icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; margin-bottom: 1.25rem;
+    }
+    .card h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.55; }
+
+    .problem-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; }
+    .problem-item {
+      display: flex; align-items: flex-start; gap: 1rem;
+      padding: 1.5rem; background: rgba(244,63,94,0.05); border: 1px solid rgba(244,63,94,0.12);
+      border-radius: 14px; transition: all 0.3s;
+    }
+    .problem-item:hover { background: rgba(244,63,94,0.08); }
+    .problem-icon {
+      flex-shrink: 0; width: 40px; height: 40px; border-radius: 10px;
+      background: rgba(244,63,94,0.12); display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+    }
+    .problem-item h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.25rem; }
+    .problem-item p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; }
+
+    .benchmark-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+    .benchmark-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 2rem; position: relative; overflow: hidden;
+    }
+    .benchmark-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    }
+    .benchmark-card.japan::before { background: linear-gradient(90deg, #f43f5e, #ec4899); }
+    .benchmark-card.china::before { background: linear-gradient(90deg, #f59e0b, #ef4444); }
+    .benchmark-card.singapore::before { background: linear-gradient(90deg, #10b981, #06b6d4); }
+    .benchmark-card .flag { font-size: 2rem; margin-bottom: 1rem; }
+    .benchmark-card h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .benchmark-card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.55; margin-bottom: 1rem; }
+    .benchmark-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .tag {
+      font-size: 0.7rem; font-weight: 500; padding: 0.3rem 0.65rem;
+      border-radius: 6px; background: rgba(255,255,255,0.06); color: var(--text-muted);
+    }
+
+    .icon-blue { background: rgba(59,130,246,0.12); color: #60a5fa; }
+    .icon-green { background: rgba(16,185,129,0.12); color: #34d399; }
+    .icon-amber { background: rgba(245,158,11,0.12); color: #fbbf24; }
+    .icon-purple { background: rgba(139,92,246,0.12); color: #a78bfa; }
+
+    .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; margin-top: 3rem; }
+    .stat-box {
+      text-align: center; padding: 2rem 1rem;
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px;
+    }
+    .stat-number { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.03em; }
+    .stat-number.blue { color: var(--accent-light); }
+    .stat-number.green { color: var(--green); }
+    .stat-number.amber { color: var(--amber); }
+    .stat-number.purple { color: var(--purple); }
+    .stat-label { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.35rem; }
+
+    .timeline { position: relative; max-width: 700px; }
+    .timeline::before {
+      content: ''; position: absolute; left: 19px; top: 0; bottom: 0;
+      width: 2px; background: var(--border);
+    }
+    .timeline-item { display: flex; gap: 1.5rem; margin-bottom: 2rem; position: relative; }
+    .timeline-dot {
+      flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%;
+      background: var(--bg-card); border: 2px solid var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.75rem; font-weight: 700; color: var(--accent-light); z-index: 1;
+    }
+    .timeline-content { padding-top: 0.5rem; }
+    .timeline-content h4 { font-size: 1rem; font-weight: 600; margin-bottom: 0.25rem; }
+    .timeline-content p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.55; }
+
+    .value-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; }
+    .value-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
+      padding: 2rem; display: flex; gap: 1.25rem; align-items: flex-start;
+      transition: all 0.3s;
+    }
+    .value-card:hover { background: var(--bg-card-hover); transform: translateY(-3px); }
+    .value-icon {
+      flex-shrink: 0; width: 44px; height: 44px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
+    }
+    .value-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.35rem; }
+    .value-card p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; }
+
+    .cta-section {
+      text-align: center; align-items: center;
+      background: radial-gradient(ellipse at 50% 60%, rgba(59,130,246,0.08) 0%, transparent 60%);
+    }
+    .cta-section h2 {
+      font-size: clamp(2rem, 4vw, 3rem); font-weight: 800; letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+    }
+    .cta-section p { font-size: 1.1rem; color: var(--text-muted); max-width: 500px; margin-bottom: 2rem; line-height: 1.6; }
+    .contact-row { display: flex; gap: 2rem; flex-wrap: wrap; justify-content: center; margin-top: 1rem; }
+    .contact-item { font-size: 0.9rem; color: var(--text-muted); }
+    .contact-item strong { color: var(--text); }
+
+    footer {
+      text-align: center; padding: 2rem; font-size: 0.8rem; color: var(--text-muted);
+      border-top: 1px solid var(--border);
+    }
+
+    @media (max-width: 768px) {
+      section { padding: 5rem 1.5rem 3rem; }
+      nav .nav-links { display: none; }
+      .card-grid, .problem-list, .benchmark-grid, .value-grid { grid-template-columns: 1fr; }
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">SMART TRANSIT</div>
+  <div class="nav-links">
+    <a href="#problem">Problem</a>
+    <a href="#benchmark">Benchmark</a>
+    <a href="#solution">Solution</a>
+    <a href="#value">Value</a>
+    <a href="#timeline">Timeline</a>
+  </div>
+</nav>
+
+<section class="hero" id="hero">
+  <div class="hero-badge fade-up">Proposal 2026</div>
+  <h1 class="fade-up delay-1">Smart Transit<br>Experience</h1>
+  <p class="fade-up delay-2">A comprehensive digital upgrade for Malaysia's R&R rest stops and KTM rail stations — transforming static infrastructure into intelligent, revenue-generating touchpoints.</p>
+  <div class="hero-cta fade-up delay-3">
+    <a href="#problem" class="btn btn-primary">Explore the Solution</a>
+  </div>
+</section>
+
+<section id="problem">
+  <div class="section-label fade-up">The Challenge</div>
+  <div class="section-title fade-up delay-1">Malaysia's transit hubs are stuck in the past</div>
+  <div class="section-desc fade-up delay-2">Millions pass through R&R stops and KTM stations daily, yet the infrastructure offers no real-time information, no digital engagement, and no data feedback loop for operators.</div>
+  <div class="problem-list">
+    <div class="problem-item fade-up delay-1">
+      <div class="problem-icon">&#x1F6C8;</div>
+      <div>
+        <h4>Static Signboards</h4>
+        <p>Outdated physical signage that cannot be updated remotely or adapted to real-time conditions.</p>
+      </div>
+    </div>
+    <div class="problem-item fade-up delay-2">
+      <div class="problem-icon">&#x23F3;</div>
+      <div>
+        <h4>No Real-Time Information</h4>
+        <p>Travellers have no access to live schedules, wait times, facility status, or traffic conditions.</p>
+      </div>
+    </div>
+    <div class="problem-item fade-up delay-3">
+      <div class="problem-icon">&#x1F4F4;</div>
+      <div>
+        <h4>Zero Digital Engagement</h4>
+        <p>No interaction layer between the traveller and the venue — a missed opportunity for service and revenue.</p>
+      </div>
+    </div>
+    <div class="problem-item fade-up delay-4">
+      <div class="problem-icon">&#x1F4CA;</div>
+      <div>
+        <h4>No Operational Data</h4>
+        <p>Operators lack foot-traffic analytics, facility usage patterns, and maintenance insights.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="benchmark">
+  <div class="section-label fade-up">Global Benchmark</div>
+  <div class="section-title fade-up delay-1">Learning from world-class transit systems</div>
+  <div class="section-desc fade-up delay-2">The best transit experiences combine cleanliness, real-time data, and seamless digital services. Here's what Malaysia can learn from global leaders.</div>
+  <div class="benchmark-grid">
+    <div class="benchmark-card japan fade-up delay-1">
+      <div class="flag">&#x1F1EF;&#x1F1F5;</div>
+      <h3>Japan</h3>
+      <p>Seamless wayfinding, immaculate facilities, real-time digital boards, and user-centric design at every touchpoint.</p>
+      <div class="benchmark-tags">
+        <span class="tag">User-centric</span>
+        <span class="tag">Cleanliness</span>
+        <span class="tag">Punctuality</span>
+      </div>
+    </div>
+    <div class="benchmark-card china fade-up delay-2">
+      <div class="flag">&#x1F1E8;&#x1F1F3;</div>
+      <h3>China</h3>
+      <p>AI-powered crowd management, facial recognition check-ins, cashless payments, and data-driven operational efficiency.</p>
+      <div class="benchmark-tags">
+        <span class="tag">AI & Automation</span>
+        <span class="tag">Big Data</span>
+        <span class="tag">Cashless</span>
+      </div>
+    </div>
+    <div class="benchmark-card singapore fade-up delay-3">
+      <div class="flag">&#x1F1F8;&#x1F1EC;</div>
+      <h3>Singapore</h3>
+      <p>Smart restrooms with IoT sensors, integrated transport apps, and government-backed digital infrastructure investment.</p>
+      <div class="benchmark-tags">
+        <span class="tag">IoT Integration</span>
+        <span class="tag">Smart Nation</span>
+        <span class="tag">Clean & Green</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="solution">
+  <div class="section-label fade-up">Our Solution</div>
+  <div class="section-title fade-up delay-1">Four integrated systems, one smart experience</div>
+  <div class="section-desc fade-up delay-2">We propose a modular, scalable digital layer that transforms existing infrastructure into intelligent, connected environments.</div>
+  <div class="card-grid">
+    <div class="card fade-up delay-1">
+      <div class="card-icon icon-blue">&#x1F5A5;</div>
+      <h3>Interactive Kiosks</h3>
+      <p>Touchscreen wayfinding, real-time transport schedules, local attraction guides, and emergency information — all in one sleek unit.</p>
+    </div>
+    <div class="card fade-up delay-2">
+      <div class="card-icon icon-green">&#x1F6BD;</div>
+      <h3>Smart Toilet System</h3>
+      <p>IoT sensors monitoring occupancy, cleanliness scores, supply levels, and maintenance alerts — with a live public dashboard.</p>
+    </div>
+    <div class="card fade-up delay-3">
+      <div class="card-icon icon-amber">&#x1F3C6;</div>
+      <h3>QR Journey Rewards</h3>
+      <p>Gamified travel experience with QR check-ins at stations, earning points for discounts at partner merchants and local attractions.</p>
+    </div>
+    <div class="card fade-up delay-4">
+      <div class="card-icon icon-purple">&#x1F4FA;</div>
+      <h3>Digital Ad Screens</h3>
+      <p>Programmatic advertising network across all venues — context-aware, time-targeted, and generating a new revenue stream for operators.</p>
+    </div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-box fade-up delay-1">
+      <div class="stat-number blue">4-in-1</div>
+      <div class="stat-label">Integrated Smart Systems</div>
+    </div>
+    <div class="stat-box fade-up delay-2">
+      <div class="stat-number purple">24/7</div>
+      <div class="stat-label">Real-Time Monitoring</div>
+    </div>
+  </div>
+</section>
+
+<section id="timeline">
+  <div class="section-label fade-up">Rollout Plan</div>
+  <div class="section-title fade-up delay-1">Phased implementation for low risk, high impact</div>
+  <div class="section-desc fade-up delay-2">A three-phase approach that starts with quick wins and scales to full nationwide deployment.</div>
+  <div class="timeline">
+    <div class="timeline-item fade-up delay-1">
+      <div class="timeline-dot">P1</div>
+      <div class="timeline-content">
+        <h4>Phase 1 — Pilot (Months 1–4)</h4>
+        <p>Deploy at 3 high-traffic R&R stops and 2 KTM stations. Install kiosks, smart toilet sensors, and digital screens. Collect baseline data and user feedback.</p>
+      </div>
+    </div>
+    <div class="timeline-item fade-up delay-2">
+      <div class="timeline-dot">P2</div>
+      <div class="timeline-content">
+        <h4>Phase 2 — Expand (Months 5–10)</h4>
+        <p>Roll out to 15 additional locations. Launch QR rewards programme with merchant partners. Activate programmatic ad network and refine based on Phase 1 learnings.</p>
+      </div>
+    </div>
+    <div class="timeline-item fade-up delay-3">
+      <div class="timeline-dot">P3</div>
+      <div class="timeline-content">
+        <h4>Phase 3 — Scale (Months 11–18)</h4>
+        <p>Nationwide deployment across all major R&R stops and KTM stations. Full data analytics dashboard for operators. Tourism board integration and cross-border partnerships.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="value">
+  <div class="section-label fade-up">Business Value</div>
+  <div class="section-title fade-up delay-1">Why this matters — for operators, travellers, and Malaysia</div>
+  <div class="section-desc fade-up delay-2">This is not just a technology upgrade. It's a new operating model that creates value across every stakeholder.</div>
+  <div class="value-grid">
+    <div class="value-card fade-up delay-1">
+      <div class="value-icon icon-amber">&#x1F4B0;</div>
+      <div>
+        <h3>New Advertising Revenue</h3>
+        <p>Programmatic digital screens across a high-traffic network create a premium, measurable advertising channel.</p>
+      </div>
+    </div>
+    <div class="value-card fade-up delay-2">
+      <div class="value-icon icon-blue">&#x2B50;</div>
+      <div>
+        <h3>Better Customer Experience</h3>
+        <p>Real-time info, clean facilities, and gamified rewards increase satisfaction and dwell time.</p>
+      </div>
+    </div>
+    <div class="value-card fade-up delay-3">
+      <div class="value-icon icon-green">&#x1F4C8;</div>
+      <div>
+        <h3>Data-Driven Operations</h3>
+        <p>Foot traffic analytics, facility usage patterns, and predictive maintenance reduce costs and improve service levels.</p>
+      </div>
+    </div>
+    <div class="value-card fade-up delay-4">
+      <div class="value-icon icon-purple">&#x2708;</div>
+      <div>
+        <h3>Tourism Promotion</h3>
+        <p>Kiosks and rewards drive discovery of local attractions, boosting regional tourism and supporting the Visit Malaysia agenda.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section" id="contact">
+  <div class="section-label fade-up">Next Steps</div>
+  <h2 class="fade-up delay-1">Let's build the future of<br>travel in Malaysia</h2>
+  <p class="fade-up delay-2">We're ready to begin the pilot phase and build a smarter travel experience for Malaysia.</p>
+</section>
+
+<footer>
+  &copy; 2026 Smart Transit Experience Proposal &middot; Confidential
+</footer>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
