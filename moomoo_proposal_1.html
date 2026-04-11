@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moo Moo Market — Game Design Proposal</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f0f0f; color: #e2e2e2; font-size: 14px; line-height: 1.6; }
+  .page { max-width: 860px; margin: 40px auto; background: #1a1a1a; border-radius: 16px; overflow: hidden; border: 1px solid #2e2e2e; }
+  .hero { background: #1b3a2d; padding: 48px 40px 36px; text-align: center; border-bottom: 1px solid #2a4a38; }
+  .hero h1 { font-size: 36px; font-weight: 700; color: #d8f3dc; margin-bottom: 8px; letter-spacing: -0.5px; }
+  .hero p { font-size: 15px; color: #74c69d; margin-bottom: 16px; }
+  .meta { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+  .pill { font-size: 12px; padding: 4px 14px; border-radius: 20px; background: rgba(255,255,255,0.07); color: #95d5b2; border: 1px solid rgba(255,255,255,0.12); }
+  .content { padding: 40px; }
+  .sec { margin-bottom: 36px; }
+  .sh { display: flex; align-items: center; gap: 10px; padding: 10px 16px; font-size: 15px; font-weight: 600; margin-bottom: 14px; border-left: 4px solid; }
+  .sg { background: #172f20; color: #74c69d; border-color: #40916c; }
+  .sa { background: #2e2000; color: #ffd166; border-color: #e9a800; }
+  .sb { background: #0d1f3c; color: #90b8f8; border-color: #3b82f6; }
+  .sp { background: #2d1020; color: #f9a8d4; border-color: #ec4899; }
+  .spu { background: #1e1540; color: #c4b5fd; border-color: #7c3aed; }
+  .st { background: #0d2d2a; color: #5eead4; border-color: #14b8a6; }
+  .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 14px; }
+  .stat { background: #222222; border-radius: 10px; padding: 14px; text-align: center; border: 1px solid #2e2e2e; }
+  .stat-v { font-size: 26px; font-weight: 700; color: #f0f0f0; }
+  .stat-l { font-size: 11px; color: #bbb; margin-top: 3px; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; border-radius: 10px; overflow: hidden; border: 1px solid #333; margin-bottom: 10px; }
+  th { background: #111111; color: #e8e8e8; font-weight: 600; padding: 10px 14px; text-align: left; font-size: 12px; letter-spacing: 0.3px; border-bottom: 1px solid #333; }
+  td { padding: 9px 14px; border-bottom: 1px solid #2a2a2a; color: #e0e0e0; }
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) td { background: #1f1f1f; }
+  .tag { display: inline-block; font-size: 11px; padding: 2px 9px; border-radius: 10px; font-weight: 600; }
+  .told { background: #4a1515; color: #fca5a5; }
+  .tnew { background: #0f3a25; color: #86efac; }
+  .tsame { background: #0d2550; color: #93c5fd; }
+  .tbonus { background: #0f3a25; color: #86efac; }
+  .tfull { background: #0d2550; color: #93c5fd; }
+  .tdisc { background: #3a2800; color: #fcd34d; }
+  .tlost { background: #4a1515; color: #fca5a5; }
+  .ttemp { background: #3a2800; color: #fcd34d; }
+  .tperm { background: #0f3a25; color: #86efac; }
+  .note { font-size: 12px; color: #bbb; background: #222; border-radius: 8px; padding: 10px 14px; margin-top: 10px; line-height: 1.7; border-left: 3px solid #444; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin-bottom: 10px; }
+  .card { border: 1px solid #333; border-radius: 12px; padding: 14px; background: #242424; }
+  .card-n { font-size: 13px; font-weight: 600; margin: 6px 0 5px; color: #efefef; }
+  .card-d { font-size: 12px; color: #bbb; line-height: 1.5; }
+  .tl { display: flex; flex-direction: column; }
+  .trow { display: flex; gap: 0; }
+  .ttime { min-width: 90px; padding: 10px 12px 10px 0; }
+  .ttime-i { background: #242424; border-radius: 8px; padding: 6px 10px; text-align: center; font-size: 11px; font-weight: 600; color: #ccc; border: 1px solid #333; }
+  .tline { display: flex; flex-direction: column; align-items: center; padding: 0 16px; }
+  .tdot { width: 12px; height: 12px; border-radius: 50%; background: #40916c; margin-top: 12px; flex-shrink: 0; }
+  .tconn { width: 2px; background: #333; flex: 1; min-height: 20px; }
+  .trow:last-child .tconn { display: none; }
+  .tcont { flex: 1; padding: 8px 0 20px; }
+  .tcont-t { font-size: 14px; font-weight: 600; margin-bottom: 4px; color: #efefef; }
+  .tcont-s { font-size: 12px; color: #bbb; line-height: 1.6; }
+  .footer { background: #141414; padding: 20px 40px; text-align: center; font-size: 12px; color: #666; border-top: 1px solid #2e2e2e; }
+  @media (max-width: 600px) {
+    .content { padding: 24px 20px; }
+    .stat-row { grid-template-columns: repeat(2, 1fr); }
+    .hero { padding: 32px 24px; }
+    .hero h1 { font-size: 26px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="hero">
+    <h1>🐄 Moo Moo Market</h1>
+    <p>Game Balance &amp; Unlock Flow — Internal Design Proposal</p>
+    <div class="meta">
+      <span class="pill">Roblox Mini Game</span>
+      <span class="pill">30 min session</span>
+      <span class="pill">Competitive leaderboard</span>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <div class="sec">
+      <div class="sh sg">🐄 Core loop</div>
+      <div class="stat-row">
+        <div class="stat"><div class="stat-v">8</div><div class="stat-l">Starting bag slots</div></div>
+        <div class="stat"><div class="stat-v">1:1</div><div class="stat-l">Grass to milk ratio</div></div>
+        <div class="stat"><div class="stat-v">x1 / x5</div><div class="stat-l">Normal / VIP order</div></div>
+        <div class="stat"><div class="stat-v">10%</div><div class="stat-l">VIP spawn chance</div></div>
+      </div>
+      <div class="note">Feed cow with grass → collect milk → serve customer. One customer at a time. Normal customers order x1 bottle; VIP customers order x5 bottles and have a 10% spawn rate. Mixer requirement unchanged from current demo.</div>
+    </div>
+
+    <div class="sec">
+      <div class="sh sb">🧍 Customer waiting time &amp; payout rate</div>
+      <table>
+        <thead><tr><th>Waiting time</th><th>Emotion</th><th>Rate</th><th>Plain (x1 $50)</th><th>Vanilla (x1 $100)</th><th>Chocolate (x1 $200)</th><th>Strawberry (x1 $500)</th><th>VIP Strawberry (x5)</th></tr></thead>
+        <tbody>
+          <tr><td>&lt; 20s</td><td>Happy 😊</td><td><span class="tag tbonus">120%</span></td><td>$60</td><td>$120</td><td>$240</td><td>$600</td><td><strong>$3,000</strong></td></tr>
+          <tr><td>20 – 40s</td><td>Neutral 😐</td><td><span class="tag tfull">100%</span></td><td>$50</td><td>$100</td><td>$200</td><td>$500</td><td>$2,500</td></tr>
+          <tr><td>40 – 60s</td><td>Sad 😢</td><td><span class="tag tdisc">80%</span></td><td>$40</td><td>$80</td><td>$160</td><td>$400</td><td>$2,000</td></tr>
+          <tr><td>&gt; 60s</td><td>Leaves 🚶</td><td><span class="tag tlost">0%</span></td><td>$0</td><td>$0</td><td>$0</td><td>$0</td><td>$0</td></tr>
+        </tbody>
+      </table>
+      <div class="note">💡 Serving fast earns a 20% bonus. Sad customers still pay 80% — always serve even if late. A happy VIP strawberry order earns $3,000 vs $2,500 at neutral, so speed cards are especially powerful in late game.</div>
+    </div>
+
+    <div class="sec">
+      <div class="sh sa">🥛 Milk prices &amp; unlock costs</div>
+      <table>
+        <thead><tr><th>Type</th><th>Price / bottle</th><th>Order value (x5)</th><th>Happy bonus (x5)</th><th>Unlock cost</th><th>Target time</th></tr></thead>
+        <tbody>
+          <tr><td>Plain milk 🥛</td><td>$50</td><td>$250</td><td>$300</td><td>Free (starter)</td><td>0 min</td></tr>
+          <tr><td>Vanilla milk 🍦</td><td>$100</td><td>$500</td><td>$600</td><td>$200</td><td>~5–6 min</td></tr>
+          <tr><td>Chocolate milk 🍫</td><td>$200</td><td>$1,000</td><td>$1,200</td><td>$1,500</td><td>~12–14 min</td></tr>
+          <tr><td>Strawberry milk 🍓</td><td>$500</td><td>$2,500</td><td><strong>$3,000</strong></td><td>$4,000</td><td>~18–20 min</td></tr>
+        </tbody>
+      </table>
+      <div class="note">Customers only request milk types you have unlocked. Probability is equal among unlocked types. Normal order = x1 bottle. VIP order = x5 bottles, 10% spawn rate.</div>
+    </div>
+
+    <div class="sec">
+      <div class="sh sp">🔓 Rebalanced unlock costs</div>
+      <table>
+        <thead><tr><th>Item</th><th>Original cost</th><th>Proposed cost</th><th>Target unlock time</th></tr></thead>
+        <tbody>
+          <tr><td>Vanilla farm 🍦</td><td><span class="tag tsame">$200</span></td><td><span class="tag tsame">$200 unchanged</span></td><td>~5–6 min</td></tr>
+          <tr><td>Chocolate farm 🍫</td><td><span class="tag told">$2,000</span></td><td><span class="tag tnew">$1,500</span></td><td>~12–14 min</td></tr>
+          <tr><td>Strawberry farm 🍓</td><td><span class="tag told">$5,000</span></td><td><span class="tag tnew">$4,000</span></td><td>~18–20 min</td></tr>
+          <tr><td>Cow worker (auto-feeds) 🐄</td><td><span class="tag told">$500</span></td><td><span class="tag tnew">$600</span></td><td>~8–10 min</td></tr>
+          <tr><td>Water worker (auto-waters) 💧</td><td><span class="tag told">$20,000</span></td><td><span class="tag tnew">$8,000</span></td><td>~17–19 min</td></tr>
+          <tr><td>Milk worker (auto-collects to mixer) 🍼</td><td><span class="tag told">$50,000</span></td><td><span class="tag tnew">$15,000</span></td><td>~24–26 min</td></tr>
+          <tr><td>Card draw 🃏</td><td><span class="tag told">$2,000</span></td><td><span class="tag tsame">$2,000 unchanged</span></td><td>Anytime</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sec">
+      <div class="sh spu">🎒 Bag upgrades</div>
+      <table>
+        <thead><tr><th>Level</th><th>Capacity</th><th>Cost</th></tr></thead>
+        <tbody>
+          <tr><td>Starter</td><td>10 slots</td><td>Free</td></tr>
+          <tr><td>Upgrade 1</td><td>15 slots</td><td>$2,000</td></tr>
+          <tr><td>Upgrade 2</td><td>20 slots</td><td>$2,000</td></tr>
+          <tr><td>Upgrade 3</td><td>25 slots</td><td>$2,000</td></tr>
+          <tr><td>Upgrade 4</td><td>30 slots</td><td>$2,000</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sec">
+      <div class="sh st">🃏 Power card draw system</div>
+      <div class="note" style="margin-bottom: 14px;">Pay $2,000 → see 3 random cards → pick 1. Unlimited draws, budget-limited. Permanent cards stack up to 10x (+10% each = +100% max bonus).</div>
+      <div class="cards">
+        <div class="card"><span class="tag ttemp">Temporary · 45s</span><div class="card-n">Speed boost</div><div class="card-d">+50% walk speed. Best early when manual hauling dominates.</div></div>
+        <div class="card"><span class="tag ttemp">Temporary · 60s</span><div class="card-n">Production boost</div><div class="card-d">+50% crop grow speed. Save for Phase 3–4 when all farms running.</div></div>
+        <div class="card"><span class="tag ttemp">Temporary · 60s</span><div class="card-n">Cloud watering</div><div class="card-d">Auto-waters all plants at 50% efficiency. Best before water worker.</div></div>
+        <div class="card"><span class="tag ttemp">Temporary · instant</span><div class="card-n">Airdrop</div><div class="card-d">Drops 5 plain milk instantly. Emergency stock when customer is waiting.</div></div>
+        <div class="card"><span class="tag tperm">Permanent · stackable</span><div class="card-n">Bag expand</div><div class="card-d">+10% carry capacity per stack. Max 10 stacks = double bag size.</div></div>
+        <div class="card"><span class="tag tperm">Permanent · stackable</span><div class="card-n">Walk speed up</div><div class="card-d">+10% permanent walk speed. Stacks with speed boost temp card.</div></div>
+        <div class="card"><span class="tag tperm">Permanent · stackable</span><div class="card-n">Crop speed up</div><div class="card-d">+10% crop grow speed per stack. Most valuable in late game.</div></div>
+        <div class="card"><span class="tag tperm">Permanent · stackable</span><div class="card-n">Customer patience</div><div class="card-d">+10% wait timer per stack. Shifts sad customers out of leave zone.</div></div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sh sg">🗓️ Projected 30-min run</div>
+      <div class="tl">
+        <div class="trow">
+          <div class="ttime"><div class="ttime-i">0–6 min</div></div>
+          <div class="tline"><div class="tdot"></div><div class="tconn"></div></div>
+          <div class="tcont"><div class="tcont-t">Phase 1 — Plain milk loop</div><div class="tcont-s">Grass haul → feed → collect → serve. Target ~$600–800. Buy vanilla farm ($200). 1 card draw if possible ($350).</div></div>
+        </div>
+        <div class="trow">
+          <div class="ttime"><div class="ttime-i">6–12 min</div></div>
+          <div class="tline"><div class="tdot"></div><div class="tconn"></div></div>
+          <div class="tcont"><div class="tcont-t">Phase 2 — Vanilla expansion</div><div class="tcont-s">Mixer running. Stock 5 milk + 5 vanilla per batch ($500 each). Target ~$3,000. Buy cow worker ($600) + bag upgrade 1 ($300). 1–2 card draws.</div></div>
+        </div>
+        <div class="trow">
+          <div class="ttime"><div class="ttime-i">12–18 min</div></div>
+          <div class="tline"><div class="tdot"></div><div class="tconn"></div></div>
+          <div class="tcont"><div class="tcont-t">Phase 3 — Chocolate + water worker</div><div class="tcont-s">Chocolate unlocked ($1,500). Save for water worker ($8,000) — a significant milestone in multiplayer. Two farms running in parallel. Target ~$10,000 cumulative.</div></div>
+        </div>
+        <div class="trow">
+          <div class="ttime"><div class="ttime-i">18–24 min</div></div>
+          <div class="tline"><div class="tdot"></div><div class="tconn"></div></div>
+          <div class="tcont"><div class="tcont-t">Phase 4 — Strawberry + milk worker</div><div class="tcont-s">Strawberry unlocked ($4,000). Push hard to afford milk worker ($15,000) — the big endgame investment. Near full automation once purchased. Target ~$25,000 cumulative.</div></div>
+        </div>
+        <div class="trow">
+          <div class="ttime"><div class="ttime-i">24–30 min</div></div>
+          <div class="tline"><div class="tdot" style="background:#ec4899"></div><div class="tconn"></div></div>
+          <div class="tcont"><div class="tcont-t">Phase 5 — Full auto sprint</div><div class="tcont-s">All 3 workers active. Strawberry only. Fire all temp cards in final 5 minutes. Target final score: $40,000–60,000+.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sh sa">🔧 Playtesting tuning notes</div>
+      <table>
+        <thead><tr><th>If this happens during testing</th><th>Suggested fix</th></tr></thead>
+        <tbody>
+          <tr><td>Phase 1 feels too slow</td><td>Tighten customer spawn to 15–25s</td></tr>
+          <tr><td>Vanilla mixer feels too grindy</td><td>Drop requirement from 5+5 to 3+3</td></tr>
+          <tr><td>Milk worker feels unreachable</td><td>Drop cost to $4,500</td></tr>
+          <tr><td>Card draws feel too rare</td><td>Drop draw cost to $250</td></tr>
+          <tr><td>Permanent cards feel overpowered</td><td>Cap stacks at 5 instead of 10</td></tr>
+          <tr><td>Happy bonus too easy to hit</td><td>Tighten happy threshold from &lt;20s to &lt;15s</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="sec">
+      <div class="sh" style="background:#1e1a2e;color:#c4b5fd;border-left:4px solid #7c3aed;">⭐ Reputation system — review score (good to have)</div>
+      <div class="note" style="margin-bottom:14px;">A reputation layer that rewards consistent fast service and punishes sloppy play. Each player has their own independent review score — teammate performance does not affect yours. Designed to add a second axis of competition beyond raw income, especially meaningful in 2v2 where one player can hold strong reputation while their partner recovers.</div>
+      <table>
+        <thead><tr><th>Review score</th><th>Stars</th><th>Customer spawn effect</th><th>What triggers change</th></tr></thead>
+        <tbody>
+          <tr><td>5 — Excellent</td><td>⭐⭐⭐⭐⭐</td><td>Normal spawn rate</td><td>Serving 3 happy customers in a row</td></tr>
+          <tr><td>4 — Good</td><td>⭐⭐⭐⭐</td><td>Normal spawn rate</td><td>1 sad or leaving customer</td></tr>
+          <tr><td>3 — Average</td><td>⭐⭐⭐</td><td><span class="tag tdisc">-10% spawn rate</span></td><td>2–3 sad/leaving customers</td></tr>
+          <tr><td>2 — Poor</td><td>⭐⭐</td><td><span class="tag tdisc">-15% spawn rate</span></td><td>4–5 sad/leaving customers</td></tr>
+          <tr><td>1 — Terrible</td><td>⭐</td><td><span class="tag tlost">-20% spawn rate · leftover milk risk</span></td><td>6+ sad/leaving customers</td></tr>
+        </tbody>
+      </table>
+      <div class="note" style="margin-top:10px;">⚠️ At review score 1, customers arrive 20% less frequently — meaning any milk you've already produced may sit unsold and go to waste as leftover stock. This compounds the punishment: slower income AND wasted resources. Players must serve 3 happy customers consecutively to recover one star.</div>
+
+      <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="card">
+          <div class="card-n" style="color:#86efac;">Why it works for 2v2</div>
+          <div class="card-d">Creates a second leaderboard dimension beyond money. A team ahead on cash but bleeding reputation gives the other team a real comeback path. Keeps both teams engaged until the final minute.</div>
+        </div>
+        <div class="card">
+          <div class="card-n" style="color:#fca5a5;">Risk to watch</div>
+          <div class="card-d">If the penalty hits too early it can snowball and feel unfair. Recommend: review score only starts tracking after the first 3 minutes so new players aren't punished during the learning curve.</div>
+        </div>
+        <div class="card">
+          <div class="card-n" style="color:#fcd34d;">Recovery mechanic</div>
+          <div class="card-d">3 consecutive happy serves = +1 star. This gives players a clear goal to chase and prevents permanent punishment. Speed cards become extra valuable when reputation is low.</div>
+        </div>
+        <div class="card">
+          <div class="card-n" style="color:#93c5fd;">Leftover milk</div>
+          <div class="card-d">At review 1, slower spawns mean milk produced sits in the collection pad longer. Players who over-produce premium milk may waste expensive batches — a strategic risk to manage.</div>
+        </div>
+      </div>
+    </div>
+
+Moo Moo Market — Internal Design Doc &nbsp;·&nbsp; Confidential</div>
+</div>
+</body>
+</html>
