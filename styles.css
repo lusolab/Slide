@@ -1,11 +1,10 @@
 /* ===========================================================
    TIMEBID — shared styles
    Design tokens: ink navy / warm paper / brass accent
-   Display: Fraunces (engraved-dial serif) · Body: Inter
-   Data/mono: IBM Plex Mono (bids, lot codes, timers)
+   Display: Fraunces (engraved-dial serif) · Body & numbers: Inter
 =========================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,450;0,9..144,560;0,9..144,650;1,9..144,450&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,450;0,9..144,560;0,9..144,650;1,9..144,450&family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root{
   --ink:#0B1526;
@@ -41,7 +40,7 @@
 html{scroll-behavior:smooth}
 body{
   margin:0;
-  font-family:'Inter',system-ui,sans-serif;
+  font-family:'Inter','Segoe UI',-apple-system,BlinkMacSystemFont,Roboto,Helvetica,Arial,sans-serif;
   background:var(--paper);
   color:var(--text);
   -webkit-font-smoothing:antialiased;
@@ -53,7 +52,7 @@ a{color:inherit;text-decoration:none}
 button{font-family:inherit}
 ul{margin:0;padding:0;list-style:none}
 h1,h2,h3,h4{margin:0;font-family:'Fraunces',serif;font-weight:560;letter-spacing:-.01em}
-.mono{font-family:'IBM Plex Mono',monospace}
+.mono{font-family:'Inter','Segoe UI',-apple-system,BlinkMacSystemFont,Roboto,Helvetica,Arial,sans-serif;font-variant-numeric:tabular-nums}
 
 @media (prefers-reduced-motion: reduce){
   *{animation-duration:.001ms !important; transition-duration:.001ms !important}
@@ -149,7 +148,7 @@ footer.site{background:var(--ink);color:var(--muted-on-dark);margin-top:64px}
 .bezel-progress{stroke:var(--brass);stroke-linecap:round;transition:stroke-dashoffset 1s linear}
 .bezel-dark .bezel-track{stroke:rgba(255,255,255,.14)}
 .bezel-dark .bezel-progress{stroke:var(--brass-light)}
-.bezel-label{position:absolute;text-align:center;font-family:'IBM Plex Mono',monospace}
+.bezel-label{position:absolute;text-align:center;font-family:inherit;font-variant-numeric:tabular-nums}
 
 /* ---------- badges / chips ---------- */
 .chip{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;font-size:11.5px;font-weight:700;letter-spacing:.03em;text-transform:uppercase}
@@ -185,7 +184,7 @@ footer.site{background:var(--ink);color:var(--muted-on-dark);margin-top:64px}
 .lot-name{font-family:'Fraunces',serif;font-size:17px;font-weight:560;margin-top:3px;line-height:1.3}
 .lot-meta{display:flex;justify-content:space-between;align-items:flex-end;margin-top:12px}
 .lot-price-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
-.lot-price{font-family:'IBM Plex Mono',monospace;font-size:17px;font-weight:600;color:var(--ink)}
+.lot-price{font-family:inherit;font-size:17px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
 .lot-watchers{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--muted)}
 .lot-actions{padding:0 16px 16px}
 
@@ -228,7 +227,7 @@ footer.site{background:var(--ink);color:var(--muted-on-dark);margin-top:64px}
 .wizard-shell{max-width:640px;margin:0 auto}
 .dial-steps{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:36px}
 .dial-step{display:flex;flex-direction:column;align-items:center;gap:8px;flex:1;position:relative}
-.dial-step .mark{width:34px;height:34px;border-radius:50%;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono';font-size:13px;color:var(--muted);background:#fff;z-index:2}
+.dial-step .mark{width:34px;height:34px;border-radius:50%;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-family:inherit;font-weight:700;font-size:13px;color:var(--muted);background:#fff;z-index:2}
 .dial-step .lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;text-align:center}
 .dial-step .bar{position:absolute;top:17px;left:calc(-50% + 17px);width:calc(100% - 34px);height:2px;background:var(--line);z-index:1}
 .dial-step:first-child .bar{display:none}
@@ -255,7 +254,7 @@ footer.site{background:var(--ink);color:var(--muted-on-dark);margin-top:64px}
 .category-opt.selected .radio{border-color:var(--brass);background:radial-gradient(var(--brass) 45%, transparent 50%)}
 
 .otp-row{display:flex;gap:9px;justify-content:center;margin:18px 0 6px}
-.otp-row input{width:44px;height:52px;text-align:center;font-size:19px;font-family:'IBM Plex Mono';border:1.5px solid var(--line);border-radius:8px}
+.otp-row input{width:44px;height:52px;text-align:center;font-size:19px;font-family:inherit;font-weight:700;border:1.5px solid var(--line);border-radius:8px}
 .otp-row input:focus{border-color:var(--brass)}
 
 /* ---------- tabs ---------- */
@@ -293,11 +292,30 @@ table.data tr:last-child td{border-bottom:none}
 }
 
 /* ---------- category pills strip ---------- */
-.cat-strip{display:flex;gap:26px;overflow-x:auto;padding:30px 4px 6px}
-.cat-item{display:flex;flex-direction:column;align-items:center;gap:9px;flex-shrink:0;cursor:pointer}
-.cat-circle{width:64px;height:64px;border-radius:50%;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--ink);transition:.15s}
-.cat-item:hover .cat-circle,.cat-item.active .cat-circle{border-color:var(--brass);background:#FBF6EC;color:var(--brass-deep)}
-.cat-item span{font-size:12.5px;font-weight:600}
+.cat-strip{display:flex;gap:30px;overflow-x:auto;padding:30px 4px 10px}
+.cat-item{display:flex;flex-direction:column;align-items:center;gap:11px;flex-shrink:0;cursor:pointer}
+.cat-circle{
+  width:68px;height:68px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(165deg,#fff 0%,var(--paper-2) 100%);
+  border:1px solid var(--line-soft);
+  color:var(--brass-deep);
+  box-shadow:0 2px 5px rgba(20,15,5,.06), inset 0 1px 0 rgba(255,255,255,.7);
+  transition:.22s cubic-bezier(.2,.8,.3,1);
+}
+.cat-item:hover .cat-circle{
+  transform:translateY(-3px);
+  border-color:var(--brass-2);
+  box-shadow:0 12px 22px -10px rgba(174,124,47,.4), inset 0 1px 0 rgba(255,255,255,.7);
+}
+.cat-item.active .cat-circle{
+  background:linear-gradient(160deg,var(--brass-2) 0%,var(--brass-deep) 100%);
+  border-color:var(--brass-deep);
+  color:#fff;
+  box-shadow:0 14px 26px -10px rgba(126,90,32,.55), inset 0 1px 1px rgba(255,255,255,.3);
+}
+.cat-item span{font-size:12.5px;font-weight:600;color:var(--muted);transition:.2s}
+.cat-item:hover span,.cat-item.active span{color:var(--brass-deep)}
 
 /* ---------- trust strip ---------- */
 .trust-strip{display:flex;justify-content:space-between;gap:16px;border:1px solid var(--line-soft);border-radius:var(--radius-m);padding:22px 26px;background:var(--card)}
